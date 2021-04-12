@@ -34,7 +34,7 @@ jobs:
 
       - name: Basic variable usage
         run: |
-          echo Let's define a variable:
+          echo Let\'s define a variable:
           VERSION_PREFIX=MyPrefix
 
           echo Display the version prefix: $VERSION_PREFIX
