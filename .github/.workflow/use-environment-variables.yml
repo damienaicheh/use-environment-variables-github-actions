@@ -1,0 +1,48 @@
+name: Variables
+
+on:
+  push:
+    branches: [main]
+
+env:
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: First script from job1
+        run: echo We can get global values for multiple jobs $BUILD_CONFIGURATION
+
+  job2:
+    needs: job1
+    runs-on: ubuntu-latest
+    env:
+      OUTPUT_SUFFIX: MySuffix
+    steps:
+      - name: First script from job2
+        run: echo We can use the global environment variables defined for all the jobs of this Github Actions $BUILD_CONFIGURATION
+
+      - name: Use environment variables from entire job
+        run: echo We display the $OUTPUT_SUFFIX define for the entire job1
+
+      - name: Basic variable usage
+        run: |
+          MY_OUTPUT_PATH=$RUNNER_TEMP/package.extension
+          echo Display the output path: $MY_OUTPUT_PATH
+          echo And use it multiple times: $MY_OUTPUT_PATH
+
+      - name: Basic variable usage
+        run: |
+          echo Let's define a variable:
+          VERSION_PREFIX=MyPrefix
+
+          echo Display the version prefix: $VERSION_PREFIX
+          echo And use it multiple times: $VERSION_PREFIX
+
+      - name: Get secret from base 64
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo import certificate from secrets and regenerate the file
+          echo $KEYSTORE_BASE64 | base64 -d > $RUNNER_TEMP/my_production.keystore
